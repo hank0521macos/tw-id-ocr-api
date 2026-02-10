@@ -1,0 +1,36 @@
+services:
+  postgres-tw-id-ocr:
+    image: timescale/timescaledb:latest-pg14
+    container_name: postgres-tw-id-ocr
+    environment:
+      POSTGRES_DB: tw_id_ocr
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5433:5432"
+    networks:
+      - ocr-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-timescale.sql:/docker-entrypoint-initdb.d/init-timescale.sql
+
+  tw-id-ocr:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tw-id-ocr
+    depends_on:
+      - postgres-tw-id-ocr
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:1234@postgres-tw-id-ocr:5432/tw_id_ocr
+    networks:
+      - ocr-network
+
+networks:
+  ocr-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

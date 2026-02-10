@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip install:*)",
+      "Bash(pip index:*)",
+      "WebSearch",
+      "Bash(py --list)",
+      "Bash(curl:*)",
+      "Bash(\"D:\\\\workspace\\\\tw-id-ocr\\\\python-3.13.3-amd64.exe\" /quiet InstallAllUsers=0 PrependPath=0 Include_launcher=1)",
+      "Bash(py -3.13 -m pip install -r requirements.txt)",
+      "WebFetch(domain:paddlepaddle.github.io)",
+      "WebFetch(domain:www.paddleocr.ai)",
+      "Bash(py -3.13 -m uvicorn:*)",
+      "Bash(py -3.11:*)",
+      "WebFetch(domain:www.python.org)",
+      "Bash(\"D:\\\\workspace\\\\tw-id-ocr\\\\python-3.11.9-amd64.exe\" /quiet InstallAllUsers=0 PrependPath=0 Include_launcher=1)",
+      "WebFetch(domain:www.paddlepaddle.org.cn)",
+      "WebFetch(domain:github.com)",
+      "Bash(nvidia-smi:*)",
+      "Bash(wmic path win32_videocontroller get name,driverversion:*)",
+      "Bash(python:*)",
+      "Bash(findstr:*)",
+      "Bash(.venvScriptspython.exe -c \"from app.main import app; print\\(''OK''\\)\")",
+      "Bash(.venvScriptspip install opencc-python-reimplemented)",
+      "Bash(\"D:\\\\workspace\\\\tw-id-ocr\\\\.venv\\\\Scripts\\\\pip.exe\" install opencc-python-reimplemented)",
+      "WebFetch(domain:pypi.org)"
+    ]
+  }
+}
