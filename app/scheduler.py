@@ -52,17 +52,16 @@ def start_scheduler():
         replace_existing=True,
     )
 
-    # 下載圖片 - 每 N 分鐘，啟動後立刻跑
-    # max_instances=1：上一輪還沒跑完就跳過，不重複執行
-    scheduler.add_job(
-        download_job,
-        "interval",
-        minutes=SCAN_INTERVAL_MINUTES,
-        id="drive_download",
-        max_instances=1,
-        replace_existing=True,
-        next_run_time=datetime.now(),
-    )
+    # 下載圖片 - 暫時關閉排程，先手動觸發
+    # scheduler.add_job(
+    #     download_job,
+    #     "interval",
+    #     minutes=SCAN_INTERVAL_MINUTES,
+    #     id="drive_download",
+    #     max_instances=1,
+    #     replace_existing=True,
+    #     next_run_time=datetime.now(),
+    # )
 
     # OCR 處理 - 暫時關閉排程，先手動觸發
     # scheduler.add_job(
@@ -76,7 +75,7 @@ def start_scheduler():
     # )
 
     scheduler.start()
-    logger.info(f"排程已啟動: health_check(10s), download({SCAN_INTERVAL_MINUTES}min), ocr(手動)")
+    logger.info(f"排程已啟動: health_check(10s), download(手動), ocr(手動)")
 
 
 def stop_scheduler():

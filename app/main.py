@@ -8,7 +8,7 @@ from app.models import StandardResponse
 from app.database import init_db
 from app.routes.ocr import router as ocr_router
 from app.routes.stores import router as stores_router
-from app.scheduler import start_scheduler, stop_scheduler, drive_service
+from app.google_drive_service import GoogleDriveService
 
 # 設定日誌
 logging.basicConfig(
@@ -18,6 +18,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+drive_service = GoogleDriveService()
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("初始化資料庫...")
@@ -25,10 +28,7 @@ async def lifespan(app: FastAPI):
     logger.info("恢復卡住的 task...")
     from app.ocr_processor import recover_stale_tasks
     recover_stale_tasks()
-    logger.info("啟動排程...")
-    start_scheduler()
     yield
-    stop_scheduler()
 
 
 app = FastAPI(

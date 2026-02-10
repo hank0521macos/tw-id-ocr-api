@@ -1,4 +1,3 @@
-import json
 import logging
 from pathlib import Path
 
@@ -7,7 +6,6 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 
 from app.config import (
-    GOOGLE_SERVICE_ACCOUNT_JSON,
     GOOGLE_SERVICE_ACCOUNT_FILE,
     GOOGLE_DRIVE_FOLDER_ID,
 )
@@ -25,18 +23,11 @@ class GoogleDriveService:
         self.service = None
 
     def authenticate(self):
-        """Service Account 認證，優先從環境變數 JSON 字串，其次從檔案"""
-        if GOOGLE_SERVICE_ACCOUNT_JSON:
-            logger.info("從環境變數 GOOGLE_SERVICE_ACCOUNT_JSON 載入 Service Account")
-            info = json.loads(GOOGLE_SERVICE_ACCOUNT_JSON)
-            creds = service_account.Credentials.from_service_account_info(
-                info, scopes=SCOPES
-            )
-        else:
-            logger.info(f"從檔案載入 Service Account: {GOOGLE_SERVICE_ACCOUNT_FILE}")
-            creds = service_account.Credentials.from_service_account_file(
-                GOOGLE_SERVICE_ACCOUNT_FILE, scopes=SCOPES
-            )
+        """Service Account 認證，從 JSON 檔案讀取"""
+        logger.info(f"載入 Service Account: {GOOGLE_SERVICE_ACCOUNT_FILE}")
+        creds = service_account.Credentials.from_service_account_file(
+            GOOGLE_SERVICE_ACCOUNT_FILE, scopes=SCOPES
+        )
         self.service = build("drive", "v3", credentials=creds)
         logger.info("Google Drive API 連線成功")
 
