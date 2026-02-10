@@ -6,3 +6,8 @@ paddlepaddle==3.2.2
 opencv-python-headless
 Pillow
 opencc-python-reimplemented
+google-api-python-client
+google-auth
+apscheduler
+sqlalchemy
+psycopg2-binary

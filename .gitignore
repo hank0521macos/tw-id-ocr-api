@@ -19,6 +19,12 @@ postgres_data/
 uploads/*
 !uploads/.gitkeep
 
+# Google OAuth (已不使用)
+gcp-api-credentials.json
+
+# 下載的圖片
+downloads/
+
 # IDE
 .vscode/
 .idea/

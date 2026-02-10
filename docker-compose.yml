@@ -3,7 +3,7 @@ services:
     image: timescale/timescaledb:latest-pg14
     container_name: postgres-tw-id-ocr
     environment:
-      POSTGRES_DB: tw_id_ocr
+      POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
     ports:
@@ -24,7 +24,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql://postgres:1234@postgres-tw-id-ocr:5432/tw_id_ocr
+      DATABASE_URL: postgresql://postgres:1234@postgres-tw-id-ocr:5432/postgres
     networks:
       - ocr-network
 
