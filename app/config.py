@@ -24,7 +24,9 @@ DOWNLOAD_DIR = TEMP_DIR
 # 排程間隔（分鐘）
 SCAN_INTERVAL_MINUTES = int(os.getenv("SCAN_INTERVAL_MINUTES", "10"))
 
-# Database (預留)
+# Database
+# "postgresql://postgres:1234@localhost:5433/postgres"
 DATABASE_URL = os.getenv(
-    "DATABASE_URL", "postgresql://postgres:1234@localhost:5433/postgres"
+    "DATABASE_URL",
+    "postgresql://railway:a81leynywszzo5edkae8v0pgyzxwb8zl@yamanote.proxy.rlwy.net:55822/railway",
 )
