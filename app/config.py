@@ -9,6 +9,9 @@ GOOGLE_DRIVE_FOLDER_ID = os.getenv(
 )
 
 # Service Account 認證
+# 優先用 GOOGLE_SERVICE_ACCOUNT_JSON 環境變數（JSON 字串，適合 Railway 等雲端部署）
+# 其次用 GOOGLE_SERVICE_ACCOUNT_FILE 環境變數（檔案路徑，適合本地開發）
+GOOGLE_SERVICE_ACCOUNT_JSON = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")
 GOOGLE_SERVICE_ACCOUNT_FILE = os.getenv(
     "GOOGLE_SERVICE_ACCOUNT_FILE",
     str(BASE_DIR / "nchucems-1761097035404-fbe46545f56f.json"),
