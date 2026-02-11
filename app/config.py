@@ -30,6 +30,12 @@ TEMP_DIR.mkdir(parents=True, exist_ok=True)
 # 下載目錄（改用 TEMP_DIR）
 DOWNLOAD_DIR = TEMP_DIR
 
+# OpenAI
+OPENAI_API_KEY = os.getenv(
+    "OPENAI_API_KEY",
+    "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",
+)
+
 # 排程間隔（分鐘）
 SCAN_INTERVAL_MINUTES = int(os.getenv("SCAN_INTERVAL_MINUTES", "10"))
 
