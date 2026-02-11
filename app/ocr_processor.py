@@ -89,6 +89,9 @@ def process_downloaded_images(side: str | None = None) -> int:
                     logger.warning(f"圖片解碼失敗，跳過: {task.file_name}")
                     continue
 
+                # 長邊超過 2000px 等比縮小
+                img = _resize_if_needed(img, max_side=2000)
+
                 # OCR + 存結果
                 _process_single(db, ocr_service, task, img)
 
@@ -112,6 +115,17 @@ def process_downloaded_images(side: str | None = None) -> int:
         db.close()
 
     return count
+
+
+def _resize_if_needed(img: np.ndarray, max_side: int = 2000) -> np.ndarray:
+    """長邊超過 max_side 時等比縮小"""
+    h, w = img.shape[:2]
+    if max(h, w) <= max_side:
+        return img
+    scale = max_side / max(h, w)
+    new_w, new_h = int(w * scale), int(h * scale)
+    logger.info(f"圖片縮放: {w}x{h} → {new_w}x{new_h}")
+    return cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_AREA)
 
 
 def _process_single(db, ocr_service: OCRService, task: OcrTask, img: np.ndarray):
