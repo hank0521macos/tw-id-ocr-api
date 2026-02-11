@@ -112,19 +112,19 @@ def start_scheduler():
     #     next_run_time=datetime.now(),
     # )
 
-    # OCR 處理 - 每 5 分鐘處理 20 筆
-    scheduler.add_job(
-        ocr_job,
-        "interval",
-        minutes=5,
-        id="ocr_process",
-        max_instances=1,
-        replace_existing=True,
-        next_run_time=datetime.now(),
-    )
+    # OCR 處理 - 暫時關閉排程，先手動觸發
+    # scheduler.add_job(
+    #     ocr_job,
+    #     "interval",
+    #     minutes=5,
+    #     id="ocr_process",
+    #     max_instances=1,
+    #     replace_existing=True,
+    #     next_run_time=datetime.now(),
+    # )
 
     scheduler.start()
-    logger.info("排程已啟動: health_check(10s), download(手動), ocr(5min)")
+    logger.info("排程已啟動: health_check(10s), download(手動), ocr(手動)")
 
 
 def stop_scheduler():

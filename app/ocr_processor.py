@@ -11,7 +11,7 @@ from app.extractors.back import extract_back_fields
 
 logger = logging.getLogger(__name__)
 
-BATCH_SIZE = 20
+BATCH_SIZE = 100
 _ocr_service = None
 
 
