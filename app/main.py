@@ -62,6 +62,18 @@ app.include_router(stores_router)
 app.include_router(lookup_router)
 
 
+@app.get("/api/llm/test", response_model=StandardResponse, tags=["LLM"])
+async def test_llm():
+    """測試 OpenAI 連線狀態"""
+    from app.extractors.llm import test_llm_connection
+    result = test_llm_connection()
+    return StandardResponse(
+        data=result,
+        success=result["connected"],
+        message="LLM 連線正常" if result["connected"] else f"LLM 連線失敗: {result.get('error')}",
+    )
+
+
 @app.get("/health", response_model=StandardResponse, tags=["Health"])
 async def health_check():
     return StandardResponse(
