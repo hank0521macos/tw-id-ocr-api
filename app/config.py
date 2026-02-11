@@ -37,5 +37,5 @@ SCAN_INTERVAL_MINUTES = int(os.getenv("SCAN_INTERVAL_MINUTES", "10"))
 # "postgresql://railway:a81leynywszzo5edkae8v0pgyzxwb8zl@yamanote.proxy.rlwy.net:55822/railway"
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql://railway:a81leynywszzo5edkae8v0pgyzxwb8zl@yamanote.proxy.rlwy.net:55822/railway",
+    "postgresql://tsdbadmin:ypnh9505lo4xgc9x@h18tpjgcku.p16ygcakn6.tsdb.cloud.timescale.com:34797/tsdb?sslmode=require",
 )
