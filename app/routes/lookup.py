@@ -2,7 +2,6 @@ import logging
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -24,9 +23,7 @@ def batch_lookup(req: LookupRequest, db: Session = Depends(get_db)):
     """
     批次查詢門店身分證 OCR 結果。
 
-    接受多個門店名稱，以模糊比對搜尋正反面 OCR 結果。
-    比對時會忽略空格、半形/全形空白，用 LIKE 模糊搜尋。
-
+    以門店名稱精準比對搜尋正反面 OCR 結果。
     設計給 Google Sheets Apps Script 批次呼叫使用。
     """
     results = []
@@ -34,29 +31,19 @@ def batch_lookup(req: LookupRequest, db: Session = Depends(get_db)):
     for raw_name in req.store_names:
         name = raw_name.strip()
         if not name:
-            results.append({"query": raw_name, "matched_store": None, "front": None, "back": None})
+            results.append({"query": raw_name, "matched_store": None})
             continue
 
-        # 移除所有空白字元後做 LIKE 比對
-        stripped = name.replace(" ", "").replace("\u3000", "").replace("\t", "")
-
-        # 用 DB 端 REPLACE 移除空格後比對，避免空格差異導致找不到
         front = (
             db.query(OcrFrontResult)
-            .filter(
-                func.replace(func.replace(OcrFrontResult.store_name, " ", ""), "\u3000", "")
-                .ilike(f"%{stripped}%")
-            )
+            .filter_by(store_name=name)
             .order_by(OcrFrontResult.time.desc())
             .first()
         )
 
         back = (
             db.query(OcrBackResult)
-            .filter(
-                func.replace(func.replace(OcrBackResult.store_name, " ", ""), "\u3000", "")
-                .ilike(f"%{stripped}%")
-            )
+            .filter_by(store_name=name)
             .order_by(OcrBackResult.time.desc())
             .first()
         )
@@ -104,8 +91,7 @@ def batch_lookup_by_file(req: FilenameLookupRequest, db: Session = Depends(get_d
     """
     以檔名批次查詢身分證 OCR 結果。
 
-    用 ILIKE 模糊比對 file_name，忽略空格差異。
-    同一檔名有多筆時取最新一筆。
+    以檔名精準比對，同一檔名有多筆時取最新一筆。
     """
     results = []
 
@@ -115,24 +101,16 @@ def batch_lookup_by_file(req: FilenameLookupRequest, db: Session = Depends(get_d
             results.append({"query": raw_name, "matched_file": None})
             continue
 
-        stripped = name.replace(" ", "").replace("\u3000", "").replace("\t", "")
-
         front = (
             db.query(OcrFrontResult)
-            .filter(
-                func.replace(func.replace(OcrFrontResult.file_name, " ", ""), "\u3000", "")
-                .ilike(f"%{stripped}%")
-            )
+            .filter_by(file_name=name)
             .order_by(OcrFrontResult.time.desc())
             .first()
         )
 
         back = (
             db.query(OcrBackResult)
-            .filter(
-                func.replace(func.replace(OcrBackResult.file_name, " ", ""), "\u3000", "")
-                .ilike(f"%{stripped}%")
-            )
+            .filter_by(file_name=name)
             .order_by(OcrBackResult.time.desc())
             .first()
         )
@@ -169,5 +147,3 @@ def batch_lookup_by_file(req: FilenameLookupRequest, db: Session = Depends(get_d
         success=True,
         message=f"查詢 {len(req.file_names)} 筆，匹配 {found} 筆。",
     )
-
-
