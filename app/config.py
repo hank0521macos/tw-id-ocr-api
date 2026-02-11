@@ -37,5 +37,5 @@ SCAN_INTERVAL_MINUTES = int(os.getenv("SCAN_INTERVAL_MINUTES", "10"))
 # "postgresql://railway:a81leynywszzo5edkae8v0pgyzxwb8zl@yamanote.proxy.rlwy.net:55822/railway"
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql://postgres:1234@localhost:5433/postgres",
+    "postgresql://railway:a81leynywszzo5edkae8v0pgyzxwb8zl@yamanote.proxy.rlwy.net:55822/railway",
 )
