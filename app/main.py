@@ -33,7 +33,11 @@ async def lifespan(app: FastAPI):
     logger.info("恢復卡住的 task...")
     from app.ocr_processor import recover_stale_tasks
     recover_stale_tasks()
+    logger.info("啟動排程...")
+    from app.scheduler import start_scheduler, stop_scheduler
+    start_scheduler()
     yield
+    stop_scheduler()
 
 
 app = FastAPI(
