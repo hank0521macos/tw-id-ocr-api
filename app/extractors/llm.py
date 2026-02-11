@@ -3,7 +3,7 @@ import logging
 
 from openai import OpenAI
 
-from app.config import OPENAI_API_KEY
+from app.config import LLM_TOKEN
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +13,7 @@ _client = None
 def _get_client() -> OpenAI:
     global _client
     if _client is None:
-        _client = OpenAI(api_key=OPENAI_API_KEY)
+        _client = OpenAI(api_key=LLM_TOKEN)
     return _client
 
 
