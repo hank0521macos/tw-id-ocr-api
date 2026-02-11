@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, String, Float, DateTime, Text, PrimaryKeyConstraint, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Float, DateTime, Text, LargeBinary, PrimaryKeyConstraint, UniqueConstraint
 from app.database import Base
 
 
@@ -17,6 +17,7 @@ class OcrTask(Base):
     status = Column(String(20), nullable=False, default="pending")
     error_message = Column(Text)
     image_path = Column(String(500))
+    image_data = Column(LargeBinary, nullable=True)
     modified_time = Column(DateTime(timezone=True))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

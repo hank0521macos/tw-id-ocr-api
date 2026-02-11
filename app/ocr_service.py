@@ -1,4 +1,6 @@
 import logging
+
+import numpy as np
 from paddleocr import PaddleOCR
 from opencc import OpenCC
 
@@ -18,9 +20,12 @@ class OCRService:
         self.s2t = OpenCC("s2t")
         logger.info("PaddleOCR 初始化完成")
 
-    def recognize(self, image_path: str) -> dict:
+    def recognize(self, image: str | np.ndarray) -> dict:
         """
         執行 OCR 辨識，回傳基礎結果
+
+        Args:
+            image: 圖片路徑 (str) 或 numpy array
 
         Returns:
             dict with keys: texts, scores, raw_text, confidence
@@ -28,8 +33,11 @@ class OCRService:
         Raises:
             RuntimeError: OCR 識別失敗
         """
-        logger.info(f"開始辨識圖片: {image_path}")
-        result = list(self.ocr.predict(image_path))
+        if isinstance(image, np.ndarray):
+            logger.info(f"開始辨識圖片: numpy array shape={image.shape}")
+        else:
+            logger.info(f"開始辨識圖片: {image}")
+        result = list(self.ocr.predict(image))
 
         if not result:
             logger.error("OCR 未能辨識任何文字")

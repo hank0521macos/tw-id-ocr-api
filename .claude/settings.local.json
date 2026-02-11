@@ -23,7 +23,9 @@
       "Bash(.venvScriptspython.exe -c \"from app.main import app; print\\(''OK''\\)\")",
       "Bash(.venvScriptspip install opencc-python-reimplemented)",
       "Bash(\"D:\\\\workspace\\\\tw-id-ocr\\\\.venv\\\\Scripts\\\\pip.exe\" install opencc-python-reimplemented)",
-      "WebFetch(domain:pypi.org)"
+      "WebFetch(domain:pypi.org)",
+      "Bash(del:*)",
+      "Bash(netstat:*)"
     ]
   }
 }

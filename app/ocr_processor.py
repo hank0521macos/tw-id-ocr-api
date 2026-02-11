@@ -1,5 +1,7 @@
 import logging
-from pathlib import Path
+
+import cv2
+import numpy as np
 
 from app.database import SessionLocal
 from app.db_models import Store, OcrTask, OcrFrontResult, OcrBackResult
@@ -39,7 +41,7 @@ def process_downloaded_images(side: str | None = None) -> int:
     """
     處理 status=downloaded 的 OCR 任務（逐張處理）：
     1. 查 DB 撈 status=downloaded（LIMIT BATCH_SIZE）
-    2. 逐張：標記 processing → OCR → 存結果 → completed → 刪圖片
+    2. 逐張：標記 processing → OCR → 存結果 → completed → 清除 image_data
     3. 失敗 → status=failed，記錄 error_message
     4. 每張處理完立刻 commit
 
@@ -70,24 +72,30 @@ def process_downloaded_images(side: str | None = None) -> int:
                 task.status = "processing"
                 db.commit()
 
-                image_path = Path(task.image_path)
-                if not image_path.exists():
+                if task.image_data is None:
                     task.status = "failed"
-                    task.error_message = f"圖片不存在: {task.image_path}"
+                    task.error_message = "圖片資料不存在 (image_data is None)"
                     db.commit()
-                    logger.warning(f"圖片不存在，跳過: {task.file_name}")
+                    logger.warning(f"圖片資料不存在，跳過: {task.file_name}")
+                    continue
+
+                # 將 bytes 轉為 numpy array
+                nparr = np.frombuffer(task.image_data, np.uint8)
+                img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+                if img is None:
+                    task.status = "failed"
+                    task.error_message = "無法解碼圖片 (cv2.imdecode returned None)"
+                    db.commit()
+                    logger.warning(f"圖片解碼失敗，跳過: {task.file_name}")
                     continue
 
                 # OCR + 存結果
-                _process_single(db, ocr_service, task)
-
-                # 刪除暫存圖片
-                image_path.unlink(missing_ok=True)
+                _process_single(db, ocr_service, task, img)
 
                 task.status = "completed"
                 db.commit()
                 count += 1
-                logger.info(f"已處理並清除 [{count}]: {task.file_name}")
+                logger.info(f"已處理 [{count}]: {task.file_name}")
 
             except Exception as e:
                 db.rollback()
@@ -106,7 +114,7 @@ def process_downloaded_images(side: str | None = None) -> int:
     return count
 
 
-def _process_single(db, ocr_service: OCRService, task: OcrTask):
+def _process_single(db, ocr_service: OCRService, task: OcrTask, img: np.ndarray):
     """處理單張圖片：OCR → 存 DB"""
     file_name = task.file_name
     store_name = task.store_name
@@ -130,7 +138,7 @@ def _process_single(db, ocr_service: OCRService, task: OcrTask):
         return
 
     # OCR
-    ocr_result = ocr_service.recognize(task.image_path)
+    ocr_result = ocr_service.recognize(img)
 
     if side == "front":
         fields = extract_front_fields(ocr_result["texts"], ocr_result["raw_text"])

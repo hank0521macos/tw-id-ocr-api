@@ -1,3 +1,4 @@
+import io
 import logging
 from pathlib import Path
 
@@ -88,6 +89,18 @@ class GoogleDriveService:
 
         logger.info(f"已下載: {dest_path}")
         return dest_path
+
+    def download_file_bytes(self, file_id: str) -> bytes:
+        """下載檔案並回傳 bytes（不寫入檔案系統）"""
+        self._ensure_authenticated()
+        request = self.service.files().get_media(fileId=file_id)
+        buf = io.BytesIO()
+        downloader = MediaIoBaseDownload(buf, request)
+        done = False
+        while not done:
+            _, done = downloader.next_chunk()
+        logger.info(f"已下載檔案 bytes: file_id={file_id}, size={buf.tell()}")
+        return buf.getvalue()
 
     def scan_all_id_cards(self) -> list[dict]:
         """
