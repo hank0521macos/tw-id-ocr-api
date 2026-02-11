@@ -74,6 +74,7 @@ def batch_lookup(req: LookupRequest, db: Session = Depends(get_db)):
             "issue_date": front.issue_date if front else None,
             "issue_type": front.issue_type if front else None,
             "issue_location": front.issue_location if front else None,
+            "front_confidence": front.confidence if front else None,
             # 反面
             "father": back.father if back else None,
             "mother": back.mother if back else None,
@@ -81,6 +82,7 @@ def batch_lookup(req: LookupRequest, db: Session = Depends(get_db)):
             "military_service": back.military_service if back else None,
             "birthplace": back.birthplace if back else None,
             "address": back.address if back else None,
+            "back_confidence": back.confidence if back else None,
         }
         results.append(record)
 
