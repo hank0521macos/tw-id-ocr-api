@@ -40,8 +40,12 @@ LLM_TOKEN = _b64.b64decode(
 SCAN_INTERVAL_MINUTES = int(os.getenv("SCAN_INTERVAL_MINUTES", "10"))
 
 # Database
+# 本機 (Railway)
 # "postgresql://railway:a81leynywszzo5edkae8v0pgyzxwb8zl@yamanote.proxy.rlwy.net:55822/railway"
+# TigerCloud (Timescale)
+# "postgresql://tsdbadmin:ypnh9505lo4xgc9x@h18tpjgcku.p16ygcakn6.tsdb.cloud.timescale.com:34797/tsdb?sslmode=require"
+# Main (新設定)
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql://tsdbadmin:ypnh9505lo4xgc9x@h18tpjgcku.p16ygcakn6.tsdb.cloud.timescale.com:34797/tsdb?sslmode=require",
+    "postgresql://fetstream:ampstream#2026@20.222.88.179:5436/ampstream",
 )
