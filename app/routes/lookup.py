@@ -1,6 +1,7 @@
 import logging
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, Security
+from fastapi.security import APIKeyHeader
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -9,6 +10,17 @@ from app.db_models import OcrFrontResult, OcrBackResult
 from app.models import StandardResponse
 
 logger = logging.getLogger(__name__)
+
+API_KEY = "1f82fb5a-4df9-4eb2-9bc0-a56dfc1cdb15"
+
+_api_key_header = APIKeyHeader(name="Authorization")
+
+
+def verify_api_key(api_key: str = Security(_api_key_header)):
+    if api_key != f"Bearer {API_KEY}":
+        raise HTTPException(status_code=401, detail="無效的授權金鑰")
+    return api_key
+
 
 router = APIRouter(prefix="/api/lookup", tags=["Lookup"])
 
@@ -19,7 +31,7 @@ class LookupRequest(BaseModel):
 
 
 @router.post("/batch", response_model=StandardResponse)
-def batch_lookup(req: LookupRequest, db: Session = Depends(get_db)):
+def batch_lookup(req: LookupRequest, db: Session = Depends(get_db), _key: str = Security(verify_api_key)):
     """
     批次查詢門店身分證 OCR 結果。
 
@@ -87,7 +99,7 @@ class FilenameLookupRequest(BaseModel):
 
 
 @router.post("/batch-by-file", response_model=StandardResponse)
-def batch_lookup_by_file(req: FilenameLookupRequest, db: Session = Depends(get_db)):
+def batch_lookup_by_file(req: FilenameLookupRequest, db: Session = Depends(get_db), _key: str = Security(verify_api_key)):
     """
     以檔名批次查詢身分證 OCR 結果。
 
